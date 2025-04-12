@@ -7,3 +7,5 @@ Route::get('/', function () {
 });
 
 Route::resource('user', App\Http\Controllers\UserController::class);
+
+Route::resource('feedback', App\Http\Controllers\FeedbackController::class);
