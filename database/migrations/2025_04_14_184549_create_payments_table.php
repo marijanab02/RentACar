@@ -19,6 +19,11 @@ return new class extends Migration
             $table->integer('CVV');
             $table->integer('PRICE'); 
             $table->timestamps();
+
+            $table->foreign('BOOK_ID')
+                  ->references('BOOK_ID')
+                  ->on('bookings')
+                  ->onDelete('cascade');
         });
     }
 

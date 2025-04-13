@@ -22,7 +22,8 @@ class BookingController extends Controller
      */
     public function create()
     {
-        return view('booking.create');
+        $cars = \App\Models\Cars::where('AVAILABLE', 'Y')->get();
+        return view('booking.create', compact('cars'));
     }
 
     /**
@@ -62,9 +63,10 @@ class BookingController extends Controller
      */
     public function edit(string $id)
     {
-        $Booking = Booking::findOrFail($id);
+        $Booking = Booking::where('BOOK_ID', $id)->firstOrFail();
 
-        return view('booking.edit', compact('Booking'));    }
+        return view('booking.edit', compact('Booking'));
+    }
 
     /**
      * Update the specified resource in storage.
@@ -83,7 +85,7 @@ class BookingController extends Controller
             'price' => 'required|integer',
             'book_status' => 'required|max:255',
         ]);
-        Booking::whereId($id)->update($validatedData);
+        Booking::where('BOOK_ID', $id)->update($validatedData);
 
         return redirect('/booking')->with('success', 'Booking successfully updated');
     }

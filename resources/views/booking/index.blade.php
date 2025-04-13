@@ -39,7 +39,7 @@
     <tbody>
         @foreach($Bookings as $Booking)
         <tr>
-            <td>{{$Booking->id}}</td>
+            <td>{{$Booking->BOOK_ID}}</td>
             <td>{{$Booking->car_id}}</td>
             <td>{{$Booking->email}}</td>
             <td>{{$Booking->book_place}}</td>
@@ -53,9 +53,9 @@
 
 
 
-            <td><a href="{{ route('booking.edit', $Booking->id)}}" class="btn btn-primary">Edit</a></td>
+            <td><a href="{{ route('booking.edit', $Booking->BOOK_ID)}}" class="btn btn-primary">Edit</a></td>
             <td>
-                <form action="{{ route('booking.destroy', $Booking->id)}}" method="post">
+                <form action="{{ route('booking.destroy', $Booking->BOOK_ID)}}" method="post">
                   @csrf
                   @method('DELETE')
                   <button class="btn btn-danger" type="submit">Delete</button>

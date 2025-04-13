@@ -26,5 +26,8 @@ class Cars extends Model
     {
         return asset('storage/' . $this->CAR_IMG);
     }
-    
+    public function bookings()
+    {
+        return $this->hasMany(Booking::class, 'car_id', 'CAR_ID');
+    }
 }

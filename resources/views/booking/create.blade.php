@@ -23,10 +23,16 @@
       </div><br />
     @endif
       <form method="post" action="{{ route('booking.store') }}">
-          <div class="form-group">
-              @csrf
-              <label for="country_name">Car id</label>
-              <input type="text" class="form-control" name="car_id"/>
+        <div class="form-group">
+              <label for="car_id">Select Car:</label>
+              <select class="form-control" name="car_id" required>
+                  <option value="">-- Select a Car --</option>
+                  @foreach($cars as $car)
+                      <option value="{{ $car->CAR_ID }}">
+                          {{ $car->CAR_NAME }} ({{ $car->FUEL_TYPE }}, {{ $car->CAPACITY }} seats) - €{{ number_format($car->PRICE, 2) }}/day
+                      </option>
+                  @endforeach
+              </select>
           </div>
           <div class="form-group">
               @csrf
