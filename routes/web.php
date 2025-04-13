@@ -11,3 +11,4 @@ Route::resource('user', App\Http\Controllers\UserController::class);
 
 Route::resource('feedback', App\Http\Controllers\FeedbackController::class);
 Route::resource('cars', CarsController::class);
+Route::resource('booking', App\Http\Controllers\BookingController::class);
