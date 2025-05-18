@@ -14,7 +14,6 @@ class Booking extends Model
     const STATUS_CANCELLED = 'CANCELLED';
     protected $fillable = [
         'car_id',
-        'email',
         'book_place',
         'book_date',
         'duration',
@@ -23,6 +22,7 @@ class Booking extends Model
         'return_date',
         'price',
         'book_status',
+        'user_id',
     ];
     public function payment()
     {
@@ -32,4 +32,8 @@ class Booking extends Model
     {
         return $this->belongsTo(Cars::class, 'car_id', 'CAR_ID');
     }
+    public function user()
+{
+    return $this->belongsTo(User::class, 'user_id');
+}
 }

@@ -29,7 +29,7 @@
         @foreach($Feedbacks as $Feedback)
         <tr>
             <td>{{$Feedback->id}}</td>
-            <td>{{$Feedback->email}}</td>
+            <td>{{$Feedback->user->email ?? 'N/A' }}</td>
             <td>{{$Feedback->comment}}</td>
        
 

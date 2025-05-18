@@ -41,7 +41,7 @@
         <tr>
             <td>{{$Booking->BOOK_ID}}</td>
             <td>{{$Booking->car_id}}</td>
-            <td>{{$Booking->email}}</td>
+            <td>{{$Booking->user->email ?? 'N/A'}}</td>
             <td>{{$Booking->book_place}}</td>
             <td>{{$Booking->book_date}}</td>
             <td>{{$Booking->duration}}</td>

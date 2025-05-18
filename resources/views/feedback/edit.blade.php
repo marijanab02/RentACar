@@ -22,13 +22,15 @@
     @endif
       <form method="post" action="{{ route('feedback.update', $Feedback->id ) }}">
        
-          <div class="form-group">
-              @csrf
-              @method('PATCH')
-              <label for="country_name">Email:</label>
-              <input type="text" class="form-control" name="email" value="{{ $Feedback->email }}"/>
-          </div>
-
+        <div class="form-group">
+            <label for="user_id">Korisnik (email):</label>
+            <select class="form-control" name="user_id" required>
+                <option value="">Odaberi korisnika</option>
+                @foreach($users as $user)
+                    <option value="{{ $user->id }}">{{ $user->email }}</option>
+                @endforeach
+            </select>
+        </div>
 
           <div class="form-group">
               @csrf

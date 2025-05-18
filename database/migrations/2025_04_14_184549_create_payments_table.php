@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('payments', function (Blueprint $table) {
             $table->id('PAY_ID');
-            $table->unsignedBigInteger('BOOK_ID')->unique();
+            $table->unsignedBigInteger('BOOK_ID');
             $table->string('CARD_NO');
             $table->string('EXP_DATE');
             $table->integer('CVV');
