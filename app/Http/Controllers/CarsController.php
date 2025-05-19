@@ -46,7 +46,6 @@ class CarsController extends Controller
             
             // Logging za debug
             $fullPath = Storage::disk('public')->path('cars/'.$filename);
-            \Log::info('Putanja: ' . $fullPath);
             \Log::info('Postoji li fajl: ' . (file_exists($fullPath) ? 'DA' : 'NE'));
             
             $validated['CAR_IMG'] = 'cars/' . $filename;
@@ -63,6 +62,7 @@ class CarsController extends Controller
      */
     public function show(Cars $car)
     {
+        $car = Cars::all();
         return view('cars.show', compact('car'));
     }
 

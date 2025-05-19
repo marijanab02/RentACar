@@ -57,7 +57,6 @@ class BookingController extends Controller
         
         return view('booking.index',compact('Bookings'));
     }
-
     /**
      * Show the form for editing the specified resource.
      */
