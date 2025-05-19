@@ -23,7 +23,9 @@ class BookingController extends Controller
     public function create()
     {
         $cars = \App\Models\Cars::where('AVAILABLE', 'Y')->get();
-        return view('booking.create', compact('cars'));
+        $users = \App\Models\User::all(); 
+
+        return view('booking.create', compact('cars','users'));
     }
 
     /**
@@ -33,7 +35,6 @@ class BookingController extends Controller
     {
         $validatedData = $request->validate([
             'car_id' => 'required|integer',
-		    'email' => 'required|max:255',
             'book_place' => 'required|max:255',
             'book_date' => 'required',
             'duration' => 'required|integer',
@@ -42,7 +43,7 @@ class BookingController extends Controller
             'return_date' => 'required',
             'price' => 'required|integer',
             'book_status' => 'required|max:255',
-
+            'user_id' => 'required|exists:users,id'
         ]);
         $show = Booking::create($validatedData);
    
@@ -63,8 +64,9 @@ class BookingController extends Controller
     public function edit(string $id)
     {
         $Booking = Booking::where('BOOK_ID', $id)->firstOrFail();
+        $users = \App\Models\User::all(); 
 
-        return view('booking.edit', compact('Booking'));
+        return view('booking.edit', compact('Booking','users'));
     }
 
     /**
@@ -74,7 +76,6 @@ class BookingController extends Controller
     {
         $validatedData = $request->validate([
             'car_id' => 'required|integer',
-		    'email' => 'required|max:255',
             'book_place' => 'required|max:255',
             'book_date' => 'required|date',
             'duration' => 'required|integer',
@@ -83,6 +84,7 @@ class BookingController extends Controller
             'return_date' => 'required|date',
             'price' => 'required|integer',
             'book_status' => 'required|max:255',
+             'user_id' => 'required|exists:users,id',
         ]);
         Booking::where('BOOK_ID', $id)->update($validatedData);
 

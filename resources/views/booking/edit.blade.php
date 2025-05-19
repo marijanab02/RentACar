@@ -28,12 +28,16 @@
               <input type="text" class="form-control" name="car_id" value="{{ $Booking->car_id }}"/>
           </div>
 
-          <div class="form-group">
-              @csrf
-              @method('PATCH')
-              <label for="country_name">Email:</label>
-              <input type="text" class="form-control" name="email" value="{{ $Booking->email }}"/>
-          </div>
+        <div class="form-group">
+          <label for="user_id">User (Email):</label>
+            <select class="form-control" name="user_id" required>
+              @foreach($users as $user)
+              <option value="{{ $user->id }}" {{ $Booking->user_id == $user->id ? 'selected' : '' }}>
+                {{ $user->email }}
+              </option>
+              @endforeach
+           </select>
+        </div>
 
 
           <div class="form-group">

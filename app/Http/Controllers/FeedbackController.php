@@ -14,7 +14,7 @@ class FeedbackController extends Controller
     {
         
         $Feedbacks = Feedback::all();
-        
+      
         return view('feedback.index',compact('Feedbacks'));
     }
 
@@ -23,7 +23,8 @@ class FeedbackController extends Controller
      */
     public function create()
     {
-        return view('feedback.create');
+        $users = \App\Models\User::all();
+        return view('feedback.create',compact('users'));
 
     }
 
@@ -33,9 +34,9 @@ class FeedbackController extends Controller
     public function store(Request $request)
     {
         $validatedData = $request->validate([
-            'email' => 'required|max:255',
+           
             'comment' => 'required|max:255',
-            
+            'user_id' => 'required|exists:users,id'
 
         ]);
         $show = Feedback::create($validatedData);
@@ -60,7 +61,8 @@ class FeedbackController extends Controller
     public function edit(string $id)
     {
         $Feedback = Feedback::findOrFail($id);
-        return view('feedback.edit',compact('Feedback'));
+        $users = \App\Models\User::all(); 
+        return view('feedback.edit',compact('Feedback','users'));
     }
 
     /**
@@ -70,8 +72,10 @@ class FeedbackController extends Controller
     {
         $validatedData = $request->validate([
            
-            'email' => 'max:255',
+           
             'comment' =>'max:255',
+            'user_id' => 'required|exists:users,id',
+
         ]);
 
         Feedback::whereId($id)->update($validatedData);

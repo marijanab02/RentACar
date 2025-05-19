@@ -34,10 +34,15 @@
                   @endforeach
               </select>
           </div>
-          <div class="form-group">
-              @csrf
-              <label for="country_name">Email:</label>
-              <input type="text" class="form-control" name="email"/>
+          
+         <div class="form-group">
+            <label for="user_id">Select User (Email):</label>
+              <select class="form-control" name="user_id" required>
+              <option value="">-- Select a User --</option>
+              @foreach($users as $user)
+               <option value="{{ $user->id }}">{{ $user->email }}</option>
+               @endforeach
+              </select>
           </div>
 
           <div class="form-group">
