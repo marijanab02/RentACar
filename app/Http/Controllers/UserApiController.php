@@ -9,7 +9,20 @@ use Illuminate\Database\Eloquent\ModelNotFoundException;
 class UserApiController extends Controller
 {
     /**
-     * Display a listing of the resource.
+     * @group Korisnici
+     *
+     * Dohvati sve korisnike
+     *
+     * Vraća popis svih korisnika u sustavu.
+     *
+     * @response 200 [
+     *   {
+     *     "id": 1,
+     *     "fname": "Ana",
+     *     "lname": "Anić",
+     *     "email": "ana@example.com"
+     *   }
+     * ]
      */
     public function index()
     {
@@ -18,7 +31,29 @@ class UserApiController extends Controller
     }
 
     /**
-     * Store a newly created resource in storage.
+     * @group Korisnici
+     *
+     * Dodaj novog korisnika
+     *
+     * Sprema novog korisnika u bazu.
+     *
+     * @bodyParam fname string required Ime korisnika. Example: Ana
+     * @bodyParam lname string required Prezime korisnika. Example: Anić
+     * @bodyParam email string required Email adresa korisnika. Example: ana@example.com
+     * @bodyParam password string required Lozinka korisnika. Example: tajna123
+     * @bodyParam lic_num string Broj vozačke dozvole (opcionalno). Example: HR123456
+     * @bodyParam phone_num string Broj telefona (opcionalno). Example: 0912345678
+     * @bodyParam gender string Spol korisnika (opcionalno). Example: Žensko
+     *
+     * @response 201 {
+     *   "message": "User created successfully",
+     *   "user": {
+     *     "id": 2,
+     *     "fname": "Ana",
+     *     "lname": "Anić",
+     *     "email": "ana@example.com"
+     *   }
+     * }
      */
     public function store(Request $request)
     {
@@ -32,7 +67,6 @@ class UserApiController extends Controller
             'gender' => 'nullable|string',
         ]);
 
-        // Hash lozinke prije spremanja
         $validatedData['password'] = bcrypt($validatedData['password']);
 
         $user = User::create($validatedData);
@@ -44,7 +78,24 @@ class UserApiController extends Controller
     }
 
     /**
-     * Display the specified resource.
+     * @group Korisnici
+     *
+     * Prikaz pojedinog korisnika
+     *
+     * Dohvaća korisnika prema ID-u.
+     *
+     * @urlParam id integer required ID korisnika. Example: 1
+     *
+     * @response 200 {
+     *   "id": 1,
+     *   "fname": "Ana",
+     *   "lname": "Anić",
+     *   "email": "ana@example.com"
+     * }
+     *
+     * @response 404 {
+     *   "message": "User not found"
+     * }
      */
     public function show(string $id)
     {
@@ -58,7 +109,30 @@ class UserApiController extends Controller
     }
 
     /**
-     * Update the specified resource in storage.
+     * @group Korisnici
+     *
+     * Ažuriraj korisnika
+     *
+     * Ažurira korisnika prema ID-u.
+     *
+     * @urlParam id integer required ID korisnika. Example: 1
+     * @bodyParam fname string required Ime korisnika. Example: Ana
+     * @bodyParam lname string required Prezime korisnika. Example: Anić
+     * @bodyParam email string required Email korisnika. Example: ana@example.com
+     * @bodyParam password string Lozinka korisnika (opcionalno). Example: novaLozinka123
+     * @bodyParam lic_num string Broj vozačke (opcionalno). Example: HR123456
+     * @bodyParam phone_num string Broj telefona (opcionalno). Example: 0912345678
+     * @bodyParam gender string Spol korisnika (opcionalno). Example: Žensko
+     *
+     * @response 200 {
+     *   "message": "User updated successfully",
+     *   "user": {
+     *     "id": 1,
+     *     "fname": "Ana",
+     *     "lname": "Anić",
+     *     "email": "ana@example.com"
+     *   }
+     * }
      */
     public function update(Request $request, string $id)
     {
@@ -75,7 +149,6 @@ class UserApiController extends Controller
         ]);
 
         if (!empty($validatedData['password'])) {
-            // Hash lozinke prije spremanja
             $user->password = bcrypt($validatedData['password']);
             unset($validatedData['password']);
         }
@@ -89,7 +162,22 @@ class UserApiController extends Controller
     }
 
     /**
-     * Remove the specified resource from storage.
+     * @group Korisnici
+     *
+     * Obriši korisnika
+     *
+     * Briše korisnika prema ID-u.
+     *
+     * @urlParam id integer required ID korisnika. Example: 2
+     *
+     * @response 200 {
+     *   "message": "User deleted successfully"
+     * }
+     *
+     * @response 404 {
+     *   "message": "User not found",
+     *   "id_received": 99
+     * }
      */
     public function destroy(string $id)
     {
