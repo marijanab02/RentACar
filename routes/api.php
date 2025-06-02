@@ -4,17 +4,51 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\UserApiController;
 use App\Http\Controllers\CarsApiController;
 use App\Http\Controllers\BookingApiController;
+use App\Http\Controllers\Auth\LoginController;
 
 Route::get('/user', function (Request $request) {
     return $request->user();
 })->middleware('auth:sanctum');
 
-Route::apiResource('users', UserApiController::class);
+Route::post('/login', [LoginController::class, 'login']);
+// *** Registracija (store) bez auth middleware-a ***
+Route::post('/users', [UserApiController::class, 'store']);
+
+// *** Ostali CRUD endpointi za korisnike – samo za admina ***
+Route::middleware(['auth.basic'])->group(function () {
+    Route::get('/users', [UserApiController::class, 'index'])
+        ->middleware('role:admin,creator,guest,reader');;
+    Route::get('/users/{user}', [UserApiController::class, 'show'])
+        ->middleware('role:admin,creator,guest,reader');;
+    Route::put('/users/{user}', [UserApiController::class, 'update'])
+        ->middleware('role:admin');;
+    Route::patch('/users/{user}', [UserApiController::class, 'update'])
+        ->middleware('role:admin');;
+    Route::delete('/users/{user}', [UserApiController::class, 'destroy'])
+        ->middleware('role:admin');;
+});
+
 Route::apiResource('bookings',  BookingApiController::class);
 
 
-Route::get('/cars-api', [CarsApiController::class, 'index']);
-Route::get('/cars-api/{id}', [CarsApiController::class, 'show']);
-Route::post('/cars-api', [CarsApiController::class, 'store']);
-Route::put('/cars-api/{id}', [CarsApiController::class, 'update']);
-Route::delete('/cars-api/{id}', [CarsApiController::class, 'destroy']);
+Route::middleware('auth.basic')->group(function () {
+    // READ (index, show) → svi uloge: admin, creator, guest, reader
+    Route::get('/cars-api', [CarsApiController::class, 'index'])
+        ->middleware('role:admin,creator,guest,reader');
+    Route::get('/cars-api/{car}', [CarsApiController::class, 'show'])
+        ->middleware('role:admin,creator,guest,reader');
+
+    // CREATE → samo admin i creator
+    Route::post('/cars-api', [CarsApiController::class, 'store'])
+        ->middleware('role:admin,creator');
+
+    // UPDATE → samo admin
+    Route::put('/cars-api/{car}', [CarsApiController::class, 'update'])
+        ->middleware('role:admin');
+    Route::patch('/cars-api/{car}', [CarsApiController::class, 'update'])
+        ->middleware('role:admin');
+
+    // DELETE → samo admin
+    Route::delete('/cars-api/{car}', [CarsApiController::class, 'destroy'])
+        ->middleware('role:admin');
+});
