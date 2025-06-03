@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Http\Controllers;
+use Illuminate\Support\Facades\Auth;
 
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -195,4 +196,9 @@ class UserApiController extends Controller
             ], 404);
         }
     }
+    public function __construct()
+    {
+        $this->middleware('auth.basic')->except(['store']);
+    }
+    
 }
