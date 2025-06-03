@@ -28,7 +28,6 @@ Route::middleware(['auth.basic'])->group(function () {
         ->middleware('role:admin');;
 });
 
-Route::apiResource('bookings',  BookingApiController::class);
 
 
 Route::middleware('auth.basic')->group(function () {
@@ -51,4 +50,27 @@ Route::middleware('auth.basic')->group(function () {
     // DELETE → samo admin
     Route::delete('/cars-api/{car}', [CarsApiController::class, 'destroy'])
         ->middleware('role:admin');
+});
+
+
+Route::middleware('auth.basic')->group(function () {
+    // READ (index, show) → svi uloge: admin, creator, guest, reader
+    Route::get('/bookings', [BookingApiController::class, 'index'])
+        ->middleware('role:admin,creator,guest,reader');
+    Route::get('/bookings/{booking}', [BookingApiController::class, 'show'])
+        ->middleware('role:admin,creator,guest,reader');
+
+    // CREATE → samo admin i creator
+    Route::post('/bookings', [BookingApiController::class, 'store'])
+    ->middleware('role:admin,creator,guest,reader');
+
+    // UPDATE → samo admin
+    Route::put('/bookings/{booking}', [BookingApiController::class, 'update'])
+    ->middleware('role:admin,creator,guest,reader');
+    Route::patch('/bookings/{booking}', [BookingApiController::class, 'update'])
+    ->middleware('role:admin,creator,guest,reader');
+
+    // DELETE → samo admin
+    Route::delete('/bookings/{booking}', [BookingApiController::class, 'destroy'])
+    ->middleware('role:admin,creator,guest,reader');
 });

@@ -4,21 +4,22 @@ namespace App\Http\Controllers;
 
 use App\Models\Booking;
 use Illuminate\Http\Request;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 class BookingApiController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('auth.basic');
+    }
+
+    // GET /api/bookings
     public function index()
     {
-        $bookings = Booking::all();
-        return response()->json($bookings);
+        return response()->json(Booking::all());
     }
 
-    public function show($id)
-    {
-        $booking = Booking::findOrFail($id);
-        return response()->json($booking);
-    }
-
+    // POST /api/bookings
     public function store(Request $request)
     {
         $validatedData = $request->validate([
@@ -42,38 +43,69 @@ class BookingApiController extends Controller
         ], 201);
     }
 
-    public function update(Request $request, $id)
+    // GET /api/bookings/{id}
+    public function show(string $id)
     {
-        $booking = Booking::findOrFail($id);
+        $booking = Booking::find($id);
 
-        $validatedData = $request->validate([
-            'car_id' => 'sometimes|required|integer',
-            'book_place' => 'sometimes|required|string|max:255',
-            'book_date' => 'sometimes|required|date',
-            'duration' => 'sometimes|required|integer',
-            'phone_num' => 'nullable|string|max:20',
-            'destination' => 'nullable|string|max:255',
-            'return_date' => 'nullable|date',
-            'price' => 'sometimes|required|numeric',
-            'book_status' => 'sometimes|required|string|in:PENDING,PAID,CANCELLED',
-            'user_id' => 'sometimes|required|integer',
-        ]);
-
-        $booking->update($validatedData);
+        if ($booking) {
+            return response()->json($booking);
+        }
 
         return response()->json([
-            'message' => 'Booking updated successfully',
-            'booking' => $booking
-        ]);
+            'message' => 'Booking not found',
+            'id_received' => $id
+        ], 404);
     }
 
-    public function destroy($id)
+    // PUT/PATCH /api/bookings/{id}
+    public function update(Request $request, string $id)
     {
-        $booking = Booking::findOrFail($id);
-        $booking->delete();
+        try {
+            $booking = Booking::findOrFail($id);
 
-        return response()->json([
-            'message' => 'Booking deleted successfully'
-        ]);
+            $validatedData = $request->validate([
+                'car_id' => 'sometimes|required|integer',
+                'book_place' => 'sometimes|required|string|max:255',
+                'book_date' => 'sometimes|required|date',
+                'duration' => 'sometimes|required|integer',
+                'phone_num' => 'nullable|string|max:20',
+                'destination' => 'nullable|string|max:255',
+                'return_date' => 'nullable|date',
+                'price' => 'sometimes|required|numeric',
+                'book_status' => 'sometimes|required|string|in:PENDING,PAID,CANCELLED',
+                'user_id' => 'sometimes|required|integer',
+            ]);
+
+            $booking->update($validatedData);
+
+            return response()->json([
+                'message' => 'Booking updated successfully',
+                'booking' => $booking
+            ]);
+        } catch (ModelNotFoundException $e) {
+            return response()->json([
+                'message' => 'Booking not found',
+                'id_received' => $id
+            ], 404);
+        }
+    }
+
+    // DELETE /api/bookings/{id}
+    public function destroy(string $id)
+    {
+        try {
+            $booking = Booking::findOrFail($id);
+            $booking->delete();
+
+            return response()->json([
+                'message' => 'Booking deleted successfully'
+            ]);
+        } catch (ModelNotFoundException $e) {
+            return response()->json([
+                'message' => 'Booking not found',
+                'id_received' => $id
+            ], 404);
+        }
     }
 }
