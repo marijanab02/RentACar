@@ -110,7 +110,7 @@ class UserApiController extends Controller
     }
     public function __construct()
     {
-        $this->middleware('auth.basic')->except(['store']);
+        $this->middleware('auth:sanctum')->except(['store']);
     }
     
 }
