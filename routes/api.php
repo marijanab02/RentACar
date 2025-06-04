@@ -51,7 +51,7 @@ Route::middleware('auth:sanctum')->group(function () {
 });
 
 
-Route::middleware('auth.basic')->group(function () {
+Route::middleware('auth:sanctum')->group(function () {
     // READ (index, show) → svi uloge: admin, creator, guest, reader
     Route::get('/bookings', [BookingApiController::class, 'index'])
         ->middleware('role:admin,creator,guest,reader');
