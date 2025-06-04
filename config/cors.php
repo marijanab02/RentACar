@@ -2,7 +2,7 @@
 
 return [
 
-    'paths' => ['api/*', 'sanctum/csrf-cookie', 'cars/*', 'users/*', 'login/*'],
+    'paths' => ['api/*', 'sanctum/csrf-cookie', 'cars/*', 'users/*', 'login/*', 'auth/google/*'],
 'allowed_methods' => ['*'],
 'allowed_origins' => ['http://localhost:5173'],
 'allowed_origins_patterns' => [],

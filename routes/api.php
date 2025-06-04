@@ -13,9 +13,11 @@ Route::get('/user', function (Request $request) {
 Route::post('/login', [LoginController::class, 'login']);
 // *** Registracija (store) bez auth middleware-a ***
 Route::post('/users', [UserApiController::class, 'store']);
+Route::get('/cars-api', [CarsApiController::class, 'index']);
+Route::get('/cars-api/{car}', [CarsApiController::class, 'show']);
 
 // *** Ostali CRUD endpointi za korisnike – samo za admina ***
-Route::middleware(['auth.basic'])->group(function () {
+Route::middleware(['auth:sanctum'])->group(function () {
     Route::get('/users', [UserApiController::class, 'index'])
         ->middleware('role:admin,creator,guest,reader');;
     Route::get('/users/{user}', [UserApiController::class, 'show'])
@@ -30,12 +32,8 @@ Route::middleware(['auth.basic'])->group(function () {
 
 
 
-Route::middleware('auth.basic')->group(function () {
+Route::middleware('auth:sanctum')->group(function () {
     // READ (index, show) → svi uloge: admin, creator, guest, reader
-    Route::get('/cars-api', [CarsApiController::class, 'index'])
-        ->middleware('role:admin,creator,guest,reader');
-    Route::get('/cars-api/{car}', [CarsApiController::class, 'show'])
-        ->middleware('role:admin,creator,guest,reader');
 
     // CREATE → samo admin i creator
     Route::post('/cars-api', [CarsApiController::class, 'store'])
@@ -73,4 +71,11 @@ Route::middleware('auth.basic')->group(function () {
     // DELETE → samo admin
     Route::delete('/bookings/{booking}', [BookingApiController::class, 'destroy'])
     ->middleware('role:admin,creator,guest,reader');
+});
+
+Route::middleware('auth:sanctum')->post('/logout', function (Request $request) {
+    // Ako koristiš Laravel Sanctum:
+    $request->user()->currentAccessToken()->delete();
+
+    return response()->json(['message' => 'Odjavljen.'], 200);
 });

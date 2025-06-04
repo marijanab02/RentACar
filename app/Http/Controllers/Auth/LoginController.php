@@ -32,16 +32,15 @@ class LoginController extends Controller
         // Dohvati trenutno prijavljenog korisnika
         $user = Auth::user();
 
-        // Ako želite koristiti token baziranu autentikaciju (npr. Laravel Sanctum ili Passport),
-        // možete ovdje kreirati token i poslati ga. No u ovom primjeru ćemo nastaviti
-        // s Basic Auth (Base64 email:password) kakav ste dosad koristili, pa token nećemo vraćati.
-        //
-        // U klijentu ćemo spremiti Base64(email:password) i slati ga u svakom sljedećem zahtjevu 
-        // kao Basic Auth.
+         Auth::login($user);
 
+        // 4) Generiraj Sanctum token (plainTextToken)
+        $token = $user->createToken('login-token')->plainTextToken;
+
+        // 5) Vratimo token i podatke o korisniku
         return response()->json([
-            'message' => 'Prištup odobren.',
-            'user'    => $user,
+            'token' => $token,
+            'user'  => $user,
         ], 200);
     }
 
@@ -50,7 +49,11 @@ class LoginController extends Controller
      */
     public function logout(Request $request)
     {
-        Auth::logout();
-        return response()->json(['message' => 'Odjavljeni ste.']);
+        $user = Auth::user();
+        if ($user) {
+            $user->currentAccessToken()->delete();
+        }
+        return response()->json(['message' => 'Uspješno ste se odjavili'], 200);
+    
     }
 }

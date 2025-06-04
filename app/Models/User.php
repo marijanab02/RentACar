@@ -6,11 +6,13 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Laravel\Sanctum\HasApiTokens;
 
 class User extends Authenticatable
 {
     /** @use HasFactory<\Database\Factories\UserFactory> */
     use HasFactory, Notifiable;
+    use HasApiTokens;
 
     /**
      * The attributes that are mass assignable.
@@ -25,6 +27,9 @@ class User extends Authenticatable
         'lic_num',
         'phone_num',
         'gender',
+        'google_id',
+        'avatar',
+        'role',
     ];
 
     /**
@@ -57,4 +62,12 @@ class User extends Authenticatable
         }
         return $this->role === $roles;
     }
+    public function createTokenForOAuth()
+    {
+        return $this->createToken('google-token', [
+            'user:read',
+            'user:update',
+        ])->plainTextToken;
+    }
+
 }
